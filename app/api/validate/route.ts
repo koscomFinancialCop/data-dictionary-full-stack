@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
             console.error('RAG API error for variable:', variable, error);
           }
         }
-      });
+      }
     }
 
     return NextResponse.json({
