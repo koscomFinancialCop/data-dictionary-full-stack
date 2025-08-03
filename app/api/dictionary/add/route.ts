@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     // RAG로 추가된 경우 로그 업데이트
     if (source === 'rag') {
       // 최근 RAG 로그 찾아서 업데이트
-      const recentLog = await prisma.rAGSuggestionLog.findFirst({
+      const recentLog = await prisma.ragSuggestionLog.findFirst({
         where: {
           query: korean,
           accepted: false,
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (recentLog) {
-        await prisma.rAGSuggestionLog.update({
+        await prisma.ragSuggestionLog.update({
           where: { id: recentLog.id },
           data: {
             accepted: true,
