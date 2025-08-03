@@ -72,31 +72,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // RAG로 추가된 경우 로그 업데이트
-    // TODO: Prisma 클라이언트 재생성 후 주석 해제
-    // if (source === 'rag') {
-    //   // 최근 RAG 로그 찾아서 업데이트
-    //   const recentLog = await prisma.rAGSuggestionLog.findFirst({
-    //     where: {
-    //       query: korean,
-    //       accepted: false,
-    //     },
-    //     orderBy: {
-    //       createdAt: 'desc',
-    //     },
-    //   });
-
-    //   if (recentLog) {
-    //     await prisma.rAGSuggestionLog.update({
-    //       where: { id: recentLog.id },
-    //       data: {
-    //         accepted: true,
-    //         acceptedId: newMapping.id,
-    //       },
-    //     }).catch(console.error); // 로그 업데이트 실패는 무시
-    //   }
-    // }
-
     return NextResponse.json({
       success: true,
       data: newMapping,

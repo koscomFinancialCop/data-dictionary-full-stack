@@ -14,10 +14,12 @@ export default function Home() {
     description?: string;
   }>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasNoResults, setHasNoResults] = useState(false);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     setIsLoading(true);
+    setHasNoResults(false); // Reset state
     
     try {
       const response = await fetch(`/api/translate?q=${encodeURIComponent(query)}`);
@@ -27,10 +29,10 @@ export default function Home() {
         setSearchResults(data.results);
         console.log('Page: Search results:', data.results.length);
         
-        // 결과가 없으면 SearchBar에 알림
+        // 결과가 없을 때만 플래그 설정
         if (data.results.length === 0 && query.trim()) {
-          console.log('Page: No results, calling handleNoResults');
-          handleNoResults(query);
+          console.log('Page: No results found, setting hasNoResults to true');
+          setHasNoResults(true);
         }
       } else {
         console.error('API error:', data.error);
@@ -64,7 +66,7 @@ export default function Home() {
           <SearchBar 
             onSearch={handleSearch} 
             isLoading={isLoading}
-            onNoResults={handleNoResults}
+            onNoResults={hasNoResults ? handleNoResults : undefined}
           />
           
           {searchQuery && (

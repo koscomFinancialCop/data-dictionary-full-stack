@@ -18,7 +18,6 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [showRAGPopup, setShowRAGPopup] = useState(false);
   const [ragQuery, setRagQuery] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const inputId = useId();
@@ -50,30 +49,28 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
   
   // onNoResults가 호출되었을 때 RAG 제안 가져오기
   useEffect(() => {
-    if (hasSearched && onNoResults && query.trim()) {
-      console.log('SearchBar: hasSearched:', hasSearched, 'query:', query);
+    if (onNoResults && query.trim()) {
+      console.log('SearchBar: onNoResults triggered for query:', query);
       const checkForRAGSuggestions = async () => {
         console.log('SearchBar: Fetching RAG suggestions for:', query);
         setRagQuery(query);
         await getRAGSuggestions(query);
         console.log('SearchBar: RAG suggestions received:', ragSuggestions.length);
         setShowRAGPopup(true);
-        setHasSearched(false); // Reset for next search
       };
       
       // 약간의 지연 후 RAG 호출
       const timer = setTimeout(() => {
         checkForRAGSuggestions();
-      }, 1000); // 1초로 증가
+      }, 500); // 500ms로 줄임
       
       return () => clearTimeout(timer);
     }
-  }, [hasSearched, query, onNoResults, getRAGSuggestions]);
+  }, [onNoResults, query, getRAGSuggestions]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      setHasSearched(true);
       onSearch(query.trim());
       setSuggestions([]);
     }
