@@ -38,11 +38,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex flex-col items-center justify-center min-h-screen px-4">
+      {/* Skip to content link for keyboard users */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        메인 컨텐츠로 건너뛰기
+      </a>
+      
+      <main id="main-content" className="flex flex-col items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-3xl">
-          <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-            한글 → 영어 변수명 변환기
-          </h1>
+          <header>
+            <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
+              한글 → 영어 변수명 변환기
+            </h1>
+          </header>
           
           <SearchBar onSearch={handleSearch} isLoading={isLoading} />
           
@@ -54,7 +61,7 @@ export default function Home() {
             />
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
