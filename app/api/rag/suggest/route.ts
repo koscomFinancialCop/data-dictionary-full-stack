@@ -13,7 +13,7 @@ const RAG_CONFIG = {
 export async function POST(request: NextRequest) {
   try {
     const body: RAGWebhookRequest = await request.json();
-    const { query, context, language = 'ko' } = body;
+    const { query } = body;
 
     if (!query) {
       return NextResponse.json(
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
 
 // n8n 응답 파싱 함수
 function parseN8nResponse(data: any, originalQuery: string): any[] {
-  const suggestions = [];
+  const suggestions: any[] = [];
   
   // n8n 응답 형식에 따라 파싱 로직 조정
   // 예상 응답 형식:
@@ -199,7 +199,7 @@ function parseN8nResponse(data: any, originalQuery: string): any[] {
 
 // 폴백 제안 생성 (간단한 규칙 기반)
 function generateFallbackSuggestions(query: string): any[] {
-  const suggestions = [];
+  const suggestions: any[] = [];
   
   // 주문증거금 같은 금융 용어 매핑
   const financialTerms: { [key: string]: string[] } = {
