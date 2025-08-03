@@ -53,53 +53,39 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#212121] via-[#1a1a1a] to-[#212121] text-white overflow-x-hidden">
-      {/* Skip to content link for keyboard users */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-white text-black px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#212121]">
-        메인 컨텐츠로 건너뛰기
-      </a>
-      
+    <div className="relative flex flex-col items-center justify-center min-h-full px-4 py-12">
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#10a37f]/5 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#10a37f]/5 rounded-full blur-3xl"></div>
       </div>
       
-      <main id="main-content" className="relative flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <div className="w-full max-w-4xl mx-auto">
-          <AnimatedText />
+      <div className="w-full max-w-4xl mx-auto relative z-10">
+        <AnimatedText />
+        
+        <div className="relative mb-8">
+          <SearchBar 
+            onSearch={handleSearch} 
+            isLoading={isLoading}
+            onNoResults={hasNoResults ? handleNoResults : undefined}
+          />
           
-          <div className="relative mb-8">
-            <SearchBar 
-              onSearch={handleSearch} 
-              isLoading={isLoading}
-              onNoResults={hasNoResults ? handleNoResults : undefined}
-            />
-            
-            {/* Search bar glow effect */}
-            <div className="absolute inset-0 -z-10 blur-3xl opacity-20">
-              <div className="h-full w-full bg-gradient-to-r from-[#10a37f] to-[#0ea573] rounded-full"></div>
-            </div>
+          {/* Search bar glow effect */}
+          <div className="absolute inset-0 -z-10 blur-3xl opacity-20">
+            <div className="h-full w-full bg-gradient-to-r from-[#10a37f] to-[#0ea573] rounded-full"></div>
           </div>
-          
-          {searchQuery && (
-            <div className="animate-fade-in">
-              <SearchResults 
-                results={searchResults} 
-                isLoading={isLoading}
-                query={searchQuery}
-              />
-            </div>
-          )}
         </div>
         
-        {/* Footer */}
-        <footer className="absolute bottom-0 left-0 right-0 py-6 text-center">
-          <p className="text-xs text-[#666]">
-            Powered by Claude • 금융매체팀 백건우
-          </p>
-        </footer>
-      </main>
+        {searchQuery && (
+          <div className="animate-fade-in">
+            <SearchResults 
+              results={searchResults} 
+              isLoading={isLoading}
+              query={searchQuery}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
