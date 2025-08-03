@@ -9,9 +9,6 @@ const RAG_CONFIG = {
   maxRetries: parseInt(process.env.RAG_MAX_RETRIES || '3'),
 };
 
-// 캐시 저장소 (간단한 메모리 캐시)
-const suggestionCache = new Map<string, { data: RAGWebhookResponse; timestamp: number }>();
-const CACHE_TTL = 3600000; // 1시간
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,13 +22,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 캐시 확인
-    const cacheKey = `${query}-${context || ''}-${language}`;
-    const cached = suggestionCache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-      console.log('캐시에서 RAG 제안 반환:', cacheKey);
-      return NextResponse.json(cached.data);
-    }
 
     // RAG 웹훅 호출
     console.log('RAG 웹훅 호출:', query);
@@ -77,11 +67,6 @@ export async function POST(request: NextRequest) {
           },
         };
         
-        // 캐시 저장
-        suggestionCache.set(cacheKey, {
-          data: normalizedResponse,
-          timestamp: Date.now(),
-        });
         
         return NextResponse.json(normalizedResponse);
         
