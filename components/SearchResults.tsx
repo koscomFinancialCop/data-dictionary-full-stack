@@ -39,8 +39,8 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h2 className="text-gray-600 mb-2">"{query}"에 대한 검색 결과가 없습니다.</h2>
-        <p className="text-gray-400 text-sm">다른 한글 단어로 검색해보세요.</p>
+        <h2 className="text-black mb-2">"{query}"에 대한 검색 결과가 없습니다.</h2>
+        <p className="text-gray-600 text-sm">다른 한글 단어로 검색해보세요.</p>
       </div>
     );
   }
@@ -57,25 +57,25 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-2">
-                <h3 className="text-xl font-semibold text-gray-800">
+                <h3 className="text-xl font-semibold text-black">
                   <span className="sr-only">한글:</span>
                   {result.korean}
                 </h3>
                 <span className="text-gray-400" aria-hidden="true">→</span>
-                <code className="text-xl font-mono text-blue-600 bg-blue-50 px-3 py-1 rounded">
+                <code className="text-xl font-mono text-black bg-gray-100 px-3 py-1 rounded">
                   <span className="sr-only">영어 변수명:</span>
                   {result.english}
                 </code>
               </div>
               
               <div className="flex items-center gap-3 text-sm">
-                <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded" role="note">
+                <span className="px-2 py-1 bg-gray-200 text-black rounded" role="note">
                   <span className="sr-only">타입:</span>
                   {result.type}
                 </span>
                 
                 {result.description && (
-                  <p className="text-gray-500">
+                  <p className="text-gray-700">
                     <span className="sr-only">설명:</span>
                     {result.description}
                   </p>
@@ -89,7 +89,7 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
                 setCopiedIndex(index);
                 setTimeout(() => setCopiedIndex(null), 2000);
               }}
-              className="p-2 text-gray-400 hover:text-gray-600 group-hover:text-blue-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+              className="p-2 text-gray-500 hover:text-black group-hover:text-black transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 rounded"
               aria-label={`${result.english}를 클립보드에 복사`}
             >
               {copiedIndex === index ? (
@@ -108,9 +108,9 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
           </div>
           
           <div className="mt-4 pt-4 border-t border-gray-100">
-            <h4 className="text-sm text-gray-500 mb-1">사용 예시:</h4>
+            <h4 className="text-sm text-black font-medium mb-1">사용 예시:</h4>
             <pre className="overflow-x-auto">
-              <code className="block text-sm font-mono text-gray-700 bg-gray-50 p-2 rounded" aria-label="코드 예시">
+              <code className="block text-sm font-mono text-black bg-gray-100 p-2 rounded" aria-label="코드 예시">
                 const {result.english} = getUserInfo();
               </code>
             </pre>

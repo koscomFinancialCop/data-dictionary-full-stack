@@ -94,7 +94,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
         <div className={`
           relative flex items-center bg-white rounded-full shadow-md 
           transition-all duration-200 
-          ${isFocused ? 'shadow-lg ring-2 ring-blue-500' : 'hover:shadow-lg'}
+          ${isFocused ? 'shadow-lg ring-2 ring-black' : 'hover:shadow-lg'}
         `}>
           <label htmlFor={inputId} className="sr-only">
             한글 변수명 검색
@@ -109,7 +109,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onKeyDown={handleKeyDown}
             placeholder="한글 변수명을 입력하세요 (예: 사용자명)"
-            className="w-full px-6 py-4 text-lg bg-transparent outline-none rounded-l-full"
+            className="w-full px-6 py-4 text-lg text-black bg-transparent outline-none rounded-l-full placeholder:text-gray-500"
             disabled={isLoading}
             role="combobox"
             aria-autocomplete="list"
@@ -129,7 +129,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
                   setSelectedSuggestionIndex(-1);
                   inputRef.current?.focus();
                 }}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="p-2 text-gray-500 hover:text-black transition-colors"
                 aria-label="검색어 지우기"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -145,7 +145,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
                 p-3 rounded-full transition-all duration-200
                 ${isLoading || !query.trim() 
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
+                  : 'bg-black text-white hover:bg-gray-800 active:bg-gray-900'
                 }
               `}
               aria-label={isLoading ? '검색 중...' : '검색'}
@@ -182,8 +182,8 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               aria-selected={selectedSuggestionIndex === index}
               className={`w-full px-6 py-3 text-left transition-colors flex items-center ${
                 selectedSuggestionIndex === index
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'hover:bg-gray-50 text-gray-700'
+                  ? 'bg-gray-100 text-black font-medium'
+                  : 'hover:bg-gray-50 text-black'
               }`}
               onMouseDown={(e) => {
                 e.preventDefault();
