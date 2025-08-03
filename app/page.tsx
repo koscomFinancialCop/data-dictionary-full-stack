@@ -69,7 +69,7 @@ export default function Home() {
         <div className="w-full max-w-4xl mx-auto">
           <AnimatedText />
           
-          <div className="relative">
+          <div className="relative mb-8">
             <SearchBar 
               onSearch={handleSearch} 
               isLoading={isLoading}
@@ -83,7 +83,7 @@ export default function Home() {
           </div>
           
           {searchQuery && (
-            <div className="pt-16 animate-fade-in">
+            <div className="animate-fade-in">
               <SearchResults 
                 results={searchResults} 
                 isLoading={isLoading}
