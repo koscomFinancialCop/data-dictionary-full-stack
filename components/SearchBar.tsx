@@ -161,7 +161,7 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onKeyDown={handleKeyDown}
-            placeholder="한글 변수명을 입력하세요"
+            placeholder="무엇이든 입력하세요"
             className="w-full text-xl text-white bg-transparent outline-none focus:outline-none rounded-l-full placeholder:text-[#666] font-light tracking-wide"
             style={{
               padding: '20px 36px'

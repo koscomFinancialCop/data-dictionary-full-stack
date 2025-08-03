@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "한글-영어 변수명 변환기",
+  title: "K-Generator",
   description: "한글 변수명을 영어로 쉽게 변환하는 도구",
 };
 

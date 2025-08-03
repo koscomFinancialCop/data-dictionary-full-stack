@@ -96,7 +96,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="absolute bottom-0 left-0 right-0 py-6 text-center">
           <p className="text-xs text-[#666]">
-            Powered by AI • Made with ❤️ by Koscom
+            Powered by Claude • 금융매체팀 백건우
           </p>
         </footer>
       </main>

@@ -54,11 +54,11 @@ export default function AnimatedText() {
       <div className="text-center mb-6">
         <h1 className="text-5xl md:text-6xl font-bold text-white mb-2">
           <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-            Korean to Code
+            K-Generator
           </span>
         </h1>
         <p className="text-lg text-[#666] font-medium">
-          한글 변수명을 영어로 변환하는 AI 기반 도구
+          AI를 활용한 용어 사전 기반의 변수 생성기
         </p>
       </div>
 

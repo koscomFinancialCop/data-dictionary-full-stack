@@ -60,76 +60,43 @@ export default function RAGSuggestionPopup({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-3xl bg-gradient-to-br from-[#2b2b2b] to-[#252525] border border-[#444]/50 p-8 text-left align-middle shadow-2xl transition-all backdrop-blur-xl">
-                <Dialog.Title as="div" className="flex items-center gap-4 mb-8">
-                  <div className="p-3 rounded-2xl bg-gradient-to-br from-[#10a37f]/20 to-[#10a37f]/10">
-                    <SparklesIcon className="h-7 w-7 text-[#10a37f]" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">
-                      AI 변수명 제안
-                    </h3>
-                    <p className="text-sm text-[#666] mt-1">
-                      "<span className="text-[#10a37f] font-medium">{originalQuery}</span>"에 대한 추천 변수명
-                    </p>
-                  </div>
+              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-3xl bg-[#1a1a1a] p-8 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Title as="div" className="mb-6">
+                  <h3 className="text-lg font-medium text-white mb-1">
+                    AI 추천 변수명
+                  </h3>
+                  <p className="text-sm text-[#666]">
+                    "{originalQuery}"를 영어로 변환한 추천 결과입니다
+                  </p>
                 </Dialog.Title>
 
-                <div className="space-y-4 mb-8">
+                <div className="space-y-3 mb-8">
                   {suggestions.map((suggestion, index) => (
                     <div
                       key={index}
-                      className="bg-gradient-to-br from-[#1e1e1e] to-[#1a1a1a] rounded-2xl p-6 border border-[#444]/30 hover:border-[#10a37f]/30 transition-all duration-300 cursor-pointer group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      className="p-6 rounded-2xl bg-[#212121] hover:bg-[#252525] transition-all duration-300 cursor-pointer group"
                       onClick={() => onAccept(suggestion)}
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-4">
-                          <code className="text-2xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-[#10a37f] to-[#0ea573] font-bold">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-6">
+                          <code className="text-xl font-mono text-[#10a37f] font-medium">
                             {suggestion.english}
                           </code>
-                          <div className="flex gap-2">
-                            <span className="text-xs px-3 py-1.5 rounded-full bg-gradient-to-r from-[#10a37f]/20 to-[#10a37f]/10 text-[#10a37f] font-semibold">
-                              {suggestion.type}
-                            </span>
-                            {suggestion.category && (
-                              <span className="text-xs px-3 py-1.5 rounded-full bg-[#444]/30 text-[#888] font-medium">
-                                {suggestion.category}
-                              </span>
-                            )}
-                          </div>
+                          <span className="text-xs px-3 py-1 rounded-full bg-[#10a37f]/10 text-[#10a37f]">
+                            {suggestion.type}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-right">
-                            <span className={`text-sm font-semibold ${getConfidenceColor(suggestion.confidence)}`}>
-                              {Math.round(suggestion.confidence * 100)}%
-                            </span>
-                            <p className="text-xs text-[#666]">신뢰도</p>
-                          </div>
-                          <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${
-                            suggestion.confidence >= 0.8 ? 'from-green-500/20 to-green-500/10' :
-                            suggestion.confidence >= 0.6 ? 'from-yellow-500/20 to-yellow-500/10' :
-                            'from-orange-500/20 to-orange-500/10'
-                          } flex items-center justify-center`}>
-                            <span className={`text-lg font-bold ${getConfidenceColor(suggestion.confidence)}`}>
-                              {suggestion.confidence >= 0.8 ? 'A' : suggestion.confidence >= 0.6 ? 'B' : 'C'}
-                            </span>
-                          </div>
+                        <div className="flex items-center gap-4">
+                          <span className={`text-sm ${getConfidenceColor(suggestion.confidence)}`}>
+                            신뢰도 {Math.round(suggestion.confidence * 100)}%
+                          </span>
                         </div>
                       </div>
                       {suggestion.reasoning && (
-                        <p className="text-sm text-[#888] mb-4 leading-relaxed">
-                          💡 {suggestion.reasoning}
+                        <p className="text-sm text-[#666] mt-3">
+                          {suggestion.reasoning}
                         </p>
                       )}
-                      <div className="flex items-center gap-2 p-3 bg-[#1a1a1a]/50 rounded-xl">
-                        <svg className="w-4 h-4 text-[#666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                        </svg>
-                        <code className="text-xs text-[#666] font-mono">
-                          const {suggestion.english} = get{suggestion.english.charAt(0).toUpperCase() + suggestion.english.slice(1)}();
-                        </code>
-                      </div>
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#10a37f]/0 to-[#10a37f]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                     </div>
                   ))}
                 </div>
@@ -145,24 +112,17 @@ export default function RAGSuggestionPopup({
                   </div>
                 )}
 
-                <div className="flex items-center justify-between border-t border-[#444]/30 pt-6">
+                <div className="flex items-center justify-between">
                   <p className="text-sm text-[#666]">
-                    {suggestions.length > 0 ? '제안을 클릭하여 선택하세요' : ''}
+                    {suggestions.length > 0 ? '클릭하여 선택' : ''}
                   </p>
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 justify-center rounded-2xl px-6 py-3 text-sm font-medium text-[#888] hover:text-white bg-[#1e1e1e]/50 hover:bg-[#1e1e1e] border border-[#444]/30 hover:border-[#444]/50 focus:outline-none focus:ring-2 focus:ring-[#10a37f] transition-all duration-300"
-                      onClick={onReject}
-                    >
-                      <XCircleIcon className="h-4 w-4" />
-                      닫기
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-4 text-xs text-[#666] text-center">
-                  <kbd className="px-2 py-1 bg-[#1e1e1e]/50 rounded border border-[#444]/30">ESC</kbd> 키를 눌러 닫기
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-sm text-[#666] hover:text-white transition-colors"
+                    onClick={onReject}
+                  >
+                    닫기
+                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
