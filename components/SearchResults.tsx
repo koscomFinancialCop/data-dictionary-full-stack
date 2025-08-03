@@ -63,7 +63,7 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
   }, [query]);
   if (isLoading) {
     return (
-      <div className="mt-8 space-y-3" role="status" aria-live="polite" aria-label="검색 결과 로딩 중">
+      <div className="space-y-3" role="status" aria-live="polite" aria-label="검색 결과 로딩 중">
         <span className="sr-only">검색 결과를 불러오는 중입니다...</span>
         {[1, 2, 3].map((i) => (
           <div key={i} className="p-6 rounded-2xl bg-[#1a1a1a]/20 animate-pulse" aria-hidden="true">
@@ -81,7 +81,7 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
 
   if (results.length === 0 && query) {
     return (
-      <div className="mt-12" role="region" aria-live="polite">
+      <div role="region" aria-live="polite">
         <div className="text-center py-12">
           <p className="text-base text-[#666] mb-2">
             "{query}"에 대한 검색 결과가 없습니다
@@ -96,7 +96,7 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
   }
 
   return (
-    <section className="mt-8" aria-label="검색 결과">
+    <section aria-label="검색 결과">
       <h2 className="sr-only">검색 결과 목록</h2>
       <div className="space-y-3">
         {currentResults.map((result, index) => (

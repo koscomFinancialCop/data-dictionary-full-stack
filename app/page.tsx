@@ -83,7 +83,7 @@ export default function Home() {
           </div>
           
           {searchQuery && (
-            <div className="mt-12 animate-fade-in">
+            <div className="mt-20 animate-fade-in">
               <SearchResults 
                 results={searchResults} 
                 isLoading={isLoading}
