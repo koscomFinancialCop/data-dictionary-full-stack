@@ -142,9 +142,12 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
       <div className="relative w-full" role="search">
       <form onSubmit={handleSubmit} className="relative" role="form">
         <div className={`
-          relative flex items-center bg-[#2f2f2f] rounded-3xl border-2 
-          transition-all duration-200 shadow-lg h-24
-          ${isFocused ? 'border-[#10a37f] shadow-[0_0_15px_rgba(16,163,127,0.15)]' : 'border-transparent hover:border-[#444]'}
+          relative flex items-center bg-gradient-to-r from-[#2a2a2a] to-[#252525] rounded-full border 
+          transition-all duration-300 shadow-xl h-20
+          ${isFocused 
+            ? 'border-[#10a37f]/50 shadow-[0_0_30px_rgba(16,163,127,0.2)]' 
+            : 'border-[#333]/50 hover:border-[#444]/50 shadow-[0_10px_40px_rgba(0,0,0,0.3)]'
+          }
         `}>
           <label htmlFor={inputId} className="sr-only">
             한글 변수명 검색
@@ -158,10 +161,10 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onKeyDown={handleKeyDown}
-            placeholder="무엇이든 물어보세요"
-            className="w-full text-lg text-white bg-transparent outline-none focus:outline-none rounded-l-xl placeholder:text-[#8e8e8e] font-normal"
+            placeholder="한글 변수명을 입력하세요"
+            className="w-full text-xl text-white bg-transparent outline-none focus:outline-none rounded-l-full placeholder:text-[#666] font-light tracking-wide"
             style={{
-              padding: '24px 32px'
+              padding: '20px 36px'
             }}
             disabled={isLoading || ragLoading}
             autoComplete="off"

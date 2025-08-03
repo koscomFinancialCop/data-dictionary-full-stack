@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 
 const phrases = [
-  '사용자명이 변수로 뭐였더라?',
-  '선물옵션은 FNO? FTNO?',
-  '당신의 생각을 변수로 변환해보세요',
-  '금융의 새로운 가치를 창조하는',
-  'Digital Innovator, 코스콤',
+  '한글 변수명을 영어로 바꿔보세요',
+  '코드의 가독성을 높이는 첫걸음',
+  'AI가 추천하는 영어 변수명',
+  '개발자를 위한 번역 도구',
+  'Where Korean Meets Code',
 ];
 
 export default function AnimatedText() {
@@ -15,11 +15,16 @@ export default function AnimatedText() {
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   useEffect(() => {
     const currentPhrase = phrases[currentPhraseIndex];
-    const typingSpeed = isDeleting ? 50 : 100;
-    const pauseDuration = 2000;
+    const typingSpeed = isDeleting ? 30 : 80;
+    const pauseDuration = 3000;
 
     const timeout = setTimeout(() => {
       if (!isDeleting && charIndex < currentPhrase.length) {
@@ -44,11 +49,28 @@ export default function AnimatedText() {
   }, [charIndex, currentPhraseIndex, isDeleting]);
 
   return (
-    <div className="mb-8 h-16 flex items-center justify-center">
-      <h1 className="text-2xl font-light text-white/80">
-        {currentText}
-        <span className="animate-pulse text-white/60">|</span>
-      </h1>
+    <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      {/* Main Title */}
+      <div className="text-center mb-6">
+        <h1 className="text-5xl md:text-6xl font-bold text-white mb-2">
+          <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+            Korean to Code
+          </span>
+        </h1>
+        <p className="text-lg text-[#666] font-medium">
+          한글 변수명을 영어로 변환하는 AI 기반 도구
+        </p>
+      </div>
+
+      {/* Animated Text */}
+      <div className="h-12 flex items-center justify-center">
+        <p className="text-2xl md:text-3xl font-light">
+          <span className="bg-gradient-to-r from-[#10a37f] via-[#0ea573] to-[#10a37f] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+            {currentText}
+          </span>
+          <span className="inline-block w-0.5 h-8 bg-[#10a37f] ml-1 animate-blink"></span>
+        </p>
+      </div>
     </div>
   );
 }

@@ -77,10 +77,10 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
 
   if (results.length === 0 && query) {
     return (
-      <div className="mt-8" role="region" aria-live="polite">
-        <div className="bg-gradient-to-br from-[#2f2f2f] to-[#252525] rounded-3xl border border-[#444]/50 p-12 text-center backdrop-blur-sm shadow-2xl">
-          <div className="text-[#666] mb-6">
-            <svg className="w-20 h-20 mx-auto" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+      <div className="mt-12" role="region" aria-live="polite">
+        <div className="text-center py-16">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#1a1a1a]/40 mb-6">
+            <svg className="w-8 h-8 text-[#444]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
               <path 
                 stroke="currentColor" 
                 strokeLinecap="round" 
@@ -90,15 +90,16 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-medium text-white mb-3">
-            검색 결과가 없습니다
+          <h2 className="text-xl font-light text-white/80 mb-2">
+            결과 없음
           </h2>
-          <p className="text-[#8e8e8e] text-base mb-2">
-            <span className="text-[#10a37f] font-medium">"{query}"</span>에 대한 변수명을 찾을 수 없습니다.
+          <p className="text-[#666] text-sm mb-6">
+            <span className="text-white/60">"{query}"</span>에 대한 변수명을 찾을 수 없습니다
           </p>
-          <p className="text-[#666] text-sm">
-            AI가 변수명을 제안해드릴 수 있습니다. 잠시만 기다려주세요...
-          </p>
+          <div className="flex items-center justify-center gap-2 text-[#10a37f]/60">
+            <div className="w-2 h-2 bg-[#10a37f]/60 rounded-full animate-pulse"></div>
+            <p className="text-xs">AI가 제안을 준비 중입니다</p>
+          </div>
         </div>
       </div>
     );
@@ -111,35 +112,35 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
         {currentResults.map((result, index) => (
         <article
           key={`${currentPage}-${index}`}
-          className="bg-gradient-to-br from-[#2f2f2f] to-[#2a2a2a] rounded-3xl border border-[#444]/30 hover:border-[#10a37f]/30 transition-all duration-300 group overflow-hidden shadow-lg hover:shadow-xl"
+          className="bg-[#1a1a1a]/40 backdrop-blur-sm rounded-2xl border border-[#333]/30 hover:border-[#10a37f]/20 transition-all duration-500 group overflow-hidden hover:shadow-[0_20px_60px_rgba(16,163,127,0.1)] hover:bg-[#1a1a1a]/60"
           aria-label={`${result.korean}의 영어 변수명`}
+          style={{
+            animationDelay: `${index * 100}ms`,
+            animation: 'fade-in 0.6s ease-out forwards'
+          }}
         >
           <div className="p-8">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1.5 bg-gradient-to-r from-[#10a37f]/20 to-[#10a37f]/10 text-[#10a37f] rounded-full text-xs font-semibold tracking-wide">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="px-3 py-1 bg-[#10a37f]/10 text-[#10a37f] rounded-full text-xs font-medium">
                     {result.type}
                   </span>
                   {result.description && (
-                    <p className="text-[#666] text-sm line-clamp-1">
+                    <p className="text-[#555] text-sm line-clamp-1">
                       {result.description}
                     </p>
                   )}
                 </div>
                 
-                <div className="flex items-center gap-4">
-                  <h3 className="text-3xl font-semibold text-white">
+                <div className="flex items-center gap-6">
+                  <h3 className="text-2xl font-medium text-white/90">
                     {result.korean}
                   </h3>
-                  <div className="flex items-center gap-2 text-[#444]">
-                    <div className="w-8 h-[2px] bg-gradient-to-r from-[#444] to-transparent"></div>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                    <div className="w-8 h-[2px] bg-gradient-to-l from-[#444] to-transparent"></div>
-                  </div>
-                  <code className="text-3xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-[#10a37f] to-[#0ea573] font-bold">
+                  <svg className="w-4 h-4 text-[#333] group-hover:text-[#444] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                  <code className="text-2xl font-mono text-[#10a37f] font-semibold group-hover:text-[#0ea573] transition-colors duration-300">
                     {result.english}
                   </code>
                 </div>
@@ -151,7 +152,7 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
                   setCopiedIndex(index);
                   setTimeout(() => setCopiedIndex(null), 2000);
                 }}
-                className="p-3 rounded-2xl bg-[#1a1a1a]/50 text-[#666] hover:text-white hover:bg-[#10a37f] transition-all duration-300 group-hover:scale-110 backdrop-blur-sm"
+                className="p-3 rounded-xl bg-[#2a2a2a]/30 text-[#555] hover:text-white hover:bg-[#10a37f]/20 transition-all duration-300"
                 aria-label={`${result.english}를 클립보드에 복사`}
               >
                 {copiedIndex === index ? (
@@ -170,15 +171,15 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
             </div>
           </div>
           
-          <div className="bg-[#1a1a1a]/30 px-8 py-5 backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <svg className="w-4 h-4 text-[#10a37f]/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-[#0a0a0a]/20 px-8 py-4 border-t border-[#333]/20">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-3 h-3 text-[#10a37f]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
               </svg>
-              <h4 className="text-sm text-[#10a37f]/80 font-semibold">사용 예시</h4>
+              <h4 className="text-xs text-[#666] font-medium uppercase tracking-wide">Usage</h4>
             </div>
             <pre className="overflow-x-auto">
-              <code className="block text-sm font-mono text-[#abb2bf]" aria-label="코드 예시">
+              <code className="block text-xs font-mono text-[#888]" aria-label="코드 예시">
                 <span className="text-[#c678dd]">const</span> <span className="text-[#e06c75]">{result.english}</span> = <span className="text-[#61afef]">getUserInfo</span>();
               </code>
             </pre>
