@@ -25,6 +25,13 @@ export default function Home() {
       
       if (response.ok) {
         setSearchResults(data.results);
+        console.log('Page: Search results:', data.results.length);
+        
+        // 결과가 없으면 SearchBar에 알림
+        if (data.results.length === 0 && query.trim()) {
+          console.log('Page: No results, calling handleNoResults');
+          handleNoResults(query);
+        }
       } else {
         console.error('API error:', data.error);
         setSearchResults([]);
@@ -35,6 +42,12 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const handleNoResults = (query: string) => {
+    // 결과가 없을 때 처리 (SearchBar가 자체적으로 RAG 호출)
+    console.log('No results found for:', query);
+    // SearchBar가 이 콜백을 감지하고 RAG를 호출합니다
   };
 
   return (
@@ -48,7 +61,11 @@ export default function Home() {
         <div className="w-full max-w-2xl">
           <AnimatedText />
           
-          <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+          <SearchBar 
+            onSearch={handleSearch} 
+            isLoading={isLoading}
+            onNoResults={handleNoResults}
+          />
           
           {searchQuery && (
             <SearchResults 

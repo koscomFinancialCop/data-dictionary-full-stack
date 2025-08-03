@@ -3,12 +3,11 @@
 import { useState, useEffect } from 'react';
 
 const phrases = [
-  '사용자명을 영어로 바꾸려면?',
-  '비밀번호는 password? pwd?',
-  '날짜 변수명이 뭐였더라...',
-  '회원가입은 signUp? register?',
-  '목록은 list? items? array?',
-  '한글 변수명을 영어로 변환해보세요',
+  '사용자명이 변수로 뭐였더라?',
+  '선물옵션은 FNO? FTNO?',
+  '당신의 생각을 변수로 변환해보세요',
+  '금융의 새로운 가치를 창조하는',
+  'Digital Innovator, 코스콤',
 ];
 
 export default function AnimatedText() {
@@ -45,8 +44,8 @@ export default function AnimatedText() {
   }, [charIndex, currentPhraseIndex, isDeleting]);
 
   return (
-    <div className="mb-12 h-20 flex items-center justify-center">
-      <h1 className="text-3xl font-light text-white/80">
+    <div className="mb-8 h-16 flex items-center justify-center">
+      <h1 className="text-2xl font-light text-white/80">
         {currentText}
         <span className="animate-pulse text-white/60">|</span>
       </h1>

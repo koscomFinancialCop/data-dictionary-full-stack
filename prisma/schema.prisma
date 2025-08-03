@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 변수명 매핑 테이블
+model VariableMapping {
+  id          String   @id @default(cuid())
+  korean      String   // 한글 용어
+  english     String   // 영어 변수명
+  type        String   // 타입 (변수, 함수, 클래스 등)
+  category    String?  // 카테고리 (금융, 사용자, 거래 등)
+  description String?  // 설명
+  usage       String?  // 사용 예시
+  tags        String[] // 검색용 태그
+  source      String   @default("manual") // "manual", "rag", "import"
+  confidence  Float?   // RAG confidence score
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([korean, english, type]) // 중복 방지
+  @@index([korean])
+  @@index([english])
+  @@index([category])
+  @@index([tags])
+  @@index([source])
+}
+
+// 검색 기록 (선택적)
+model SearchHistory {
+  id        String   @id @default(cuid())
+  query     String   // 검색어
+  results   Int      // 결과 수
+  userId    String?  // 사용자 ID (선택적)
+  createdAt DateTime @default(now())
+
+  @@index([query])
+  @@index([createdAt])
+}
+
+// RAG 제안 로그
+model RAGSuggestionLog {
+  id          String   @id @default(cuid())
+  query       String   // 원본 검색어
+  suggestions Json     // RAG 제안 결과
+  accepted    Boolean  @default(false) // 수락 여부
+  acceptedId  String?  // 수락된 경우 VariableMapping ID
+  createdAt   DateTime @default(now())
+
+  @@index([query])
+  @@index([accepted])
+  @@index([createdAt])
+}

@@ -1,0 +1,10 @@
+korean,english,type,category,description,usage,tags
+사용자,user,변수,사용자,시스템 사용자,const user = getUser();,"사용자,user,유저"
+사용자명,userName,변수,사용자,사용자 이름,const userName = user.name;,"사용자명,username,이름"
+로그인,login,함수,인증,로그인 기능,await login(credentials);,"로그인,login,signin"
+로그아웃,logout,함수,인증,로그아웃 기능,await logout();,"로그아웃,logout,signout"
+계좌번호,accountNumber,변수,금융,계좌 번호,const accountNumber = account.number;,"계좌번호,account,계좌"
+잔액,balance,변수,금융,계좌 잔액,const balance = account.balance;,"잔액,balance,잔고"
+거래,transaction,변수,금융,금융 거래,const transaction = getTransaction();,"거래,transaction,트랜잭션"
+매수,buy,함수,거래,매수 주문,await buy(stockCode);,"매수,buy,구매"
+매도,sell,함수,거래,매도 주문,await sell(stockCode);,"매도,sell,판매"

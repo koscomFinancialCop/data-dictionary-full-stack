@@ -1,51 +1,79 @@
 'use client';
 
 import { useState, useRef, useEffect, useId } from 'react';
+import { AutocompleteProvider } from '@/components/AutocompleteProvider';
+import { useRAGSuggestions } from '@/hooks/useRAGSuggestions';
+import RAGSuggestionPopup from './RAGSuggestionPopup';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   isLoading?: boolean;
+  onNoResults?: (query: string) => void;
 }
 
-export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
+export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [showRAGPopup, setShowRAGPopup] = useState(false);
+  const [ragQuery, setRagQuery] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const inputId = useId();
   const listboxId = useId();
+  const autocompleteProvider = new AutocompleteProvider();
+  
+  const { 
+    getSuggestions: getRAGSuggestions, 
+    suggestions: ragSuggestions, 
+    isLoading: ragLoading, 
+    addToDictionary,
+    reset: resetRAG 
+  } = useRAGSuggestions();
 
   useEffect(() => {
-    // 자동완성 기능을 위한 mock 데이터
-    if (query.length > 0) {
-      const mockSuggestions = [
-        '사용자',
-        '사용자명',
-        '사용자정보',
-        '회원',
-        '회원가입',
-        '로그인',
-        '비밀번호',
-        '이메일',
-        '전화번호',
-        '주소',
-        '검색',
-        '목록',
-        '상세정보',
-        '날짜',
-        '시간',
-      ].filter(item => item.includes(query));
-      setSuggestions(mockSuggestions.slice(0, 5));
-    } else {
-      setSuggestions([]);
-    }
+    // 확장 가능한 자동완성 시스템
+    const fetchSuggestions = async () => {
+      if (query.length > 0) {
+        const results = await autocompleteProvider.getSuggestions(query);
+        setSuggestions(results);
+      } else {
+        setSuggestions([]);
+      }
+    };
+
+    const debounceTimer = setTimeout(fetchSuggestions, 150);
+    return () => clearTimeout(debounceTimer);
   }, [query]);
+  
+  // onNoResults가 호출되었을 때 RAG 제안 가져오기
+  useEffect(() => {
+    if (hasSearched && onNoResults && query.trim()) {
+      console.log('SearchBar: hasSearched:', hasSearched, 'query:', query);
+      const checkForRAGSuggestions = async () => {
+        console.log('SearchBar: Fetching RAG suggestions for:', query);
+        setRagQuery(query);
+        await getRAGSuggestions(query);
+        console.log('SearchBar: RAG suggestions received:', ragSuggestions.length);
+        setShowRAGPopup(true);
+        setHasSearched(false); // Reset for next search
+      };
+      
+      // 약간의 지연 후 RAG 호출
+      const timer = setTimeout(() => {
+        checkForRAGSuggestions();
+      }, 1000); // 1초로 증가
+      
+      return () => clearTimeout(timer);
+    }
+  }, [hasSearched, query, onNoResults, getRAGSuggestions]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+      setHasSearched(true);
       onSearch(query.trim());
       setSuggestions([]);
     }
@@ -87,14 +115,39 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
         break;
     }
   };
+  
+  // RAG 제안 수락 처리
+  const handleRAGAccept = async (suggestion: any) => {
+    const success = await addToDictionary(ragQuery, suggestion);
+    
+    if (success) {
+      // 성공하면 해당 검색어로 다시 검색
+      setQuery(ragQuery);
+      onSearch(ragQuery);
+      setShowRAGPopup(false);
+      resetRAG();
+      setRagQuery('');
+    } else {
+      // 실패 시 알림
+      console.error('Failed to add to dictionary');
+    }
+  };
+  
+  // RAG 팝업 닫기
+  const handleRAGReject = () => {
+    setShowRAGPopup(false);
+    resetRAG();
+    setRagQuery('');
+  };
 
   return (
-    <div className="relative w-full" role="search">
+    <>
+      <div className="relative w-full" role="search">
       <form onSubmit={handleSubmit} className="relative" role="form">
         <div className={`
-          relative flex items-center bg-[#2f2f2f] rounded-3xl border border-[#444] 
-          transition-all duration-200 
-          ${isFocused ? 'border-white/50' : 'hover:border-white/30'}
+          relative flex items-center bg-[#2f2f2f] rounded-3xl border-2 
+          transition-all duration-200 shadow-lg h-24
+          ${isFocused ? 'border-[#10a37f] shadow-[0_0_15px_rgba(16,163,127,0.15)]' : 'border-transparent hover:border-[#444]'}
         `}>
           <label htmlFor={inputId} className="sr-only">
             한글 변수명 검색
@@ -109,8 +162,15 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onKeyDown={handleKeyDown}
             placeholder="무엇이든 물어보세요"
-            className="w-full px-8 py-5 text-lg text-white bg-transparent outline-none rounded-l-3xl placeholder:text-[#8e8e8e]"
-            disabled={isLoading}
+            className="w-full text-lg text-white bg-transparent outline-none focus:outline-none rounded-l-xl placeholder:text-[#8e8e8e] font-normal"
+            style={{
+              padding: '24px 32px'
+            }}
+            disabled={isLoading || ragLoading}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
             role="combobox"
             aria-autocomplete="list"
             aria-expanded={suggestions.length > 0 && isFocused}
@@ -119,45 +179,27 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
             aria-label="한글 변수명 검색"
           />
           
-          <div className="flex items-center pr-4">
-            {query && !isLoading && (
-              <button
-                type="button"
-                onClick={() => {
-                  setQuery('');
-                  setSuggestions([]);
-                  setSelectedSuggestionIndex(-1);
-                  inputRef.current?.focus();
-                }}
-                className="p-2 text-[#8e8e8e] hover:text-white transition-colors"
-                aria-label="검색어 지우기"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-            
+          <div className="flex items-center pr-2">
             <button
               type="submit"
-              disabled={isLoading || !query.trim()}
+              disabled={isLoading || ragLoading || !query.trim()}
               className={`
-                p-3 mr-3 transition-all duration-200
-                ${isLoading || !query.trim() 
-                  ? 'text-[#444] cursor-not-allowed' 
-                  : 'text-[#8e8e8e] hover:text-white'
+                p-5 rounded-full transition-all duration-200
+                ${isLoading || ragLoading || !query.trim() 
+                  ? 'text-[#666] cursor-not-allowed' 
+                  : 'text-[#8e8e8e] hover:text-white hover:bg-[#3e3e3e]'
                 }
               `}
-              aria-label={isLoading ? '검색 중...' : '검색'}
+              aria-label={isLoading || ragLoading ? '검색 중...' : '검색'}
             >
-              {isLoading ? (
-                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              {isLoading || ragLoading ? (
+                <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M10 2a8 8 0 016.32 12.906l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
                 </svg>
               )}
             </button>
@@ -172,7 +214,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
           id={listboxId}
           role="listbox"
           aria-label="검색 제안"
-          className="absolute top-full left-0 right-0 mt-2 bg-[#2f2f2f] rounded-xl border border-[#444] overflow-hidden z-10"
+          className="absolute top-full left-0 right-0 mt-2 bg-[#2f2f2f] rounded-2xl border border-[#444] overflow-hidden z-10 shadow-xl"
         >
           {suggestions.map((suggestion, index) => (
             <button
@@ -180,7 +222,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               id={`suggestion-${index}`}
               role="option"
               aria-selected={selectedSuggestionIndex === index}
-              className={`w-full px-6 py-3 text-left transition-colors flex items-center ${
+              className={`w-full px-6 py-3 text-left transition-colors flex items-center text-sm ${
                 selectedSuggestionIndex === index
                   ? 'bg-[#3e3e3e] text-white'
                   : 'hover:bg-[#3e3e3e] text-white/80'
@@ -200,5 +242,16 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
         </div>
       )}
     </div>
+    
+    {/* RAG 제안 팝업 */}
+    <RAGSuggestionPopup
+      isOpen={showRAGPopup}
+      suggestions={ragSuggestions}
+      originalQuery={ragQuery}
+      onAccept={handleRAGAccept}
+      onReject={handleRAGReject}
+      onClose={handleRAGReject}
+    />
+  </>
   );
 }

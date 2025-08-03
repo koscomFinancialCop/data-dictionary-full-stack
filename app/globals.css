@@ -51,6 +51,26 @@ body {
   outline-offset: 2px;
 }
 
+/* Search input specific styles */
+input[type="text"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Custom search input padding */
+.search-input-padding {
+  padding: 24px 32px;
+}
+
+/* Placeholder styling */
+input::placeholder {
+  transition: opacity 0.2s ease;
+}
+
+input:focus::placeholder {
+  opacity: 0.6;
+}
+
 /* Screen reader only class */
 .sr-only {
   position: absolute;
@@ -85,6 +105,7 @@ button:hover {
   transform: translateY(-1px);
   transition: transform 0.2s ease;
 }
+
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {

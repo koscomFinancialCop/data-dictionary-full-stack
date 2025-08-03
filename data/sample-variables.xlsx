@@ -1,0 +1,4 @@
+korean,english,type,category,description,usage,tags
+사용자,user,변수,사용자,시스템 사용자,const user = getUser();,"사용자,user,유저"
+로그인,login,함수,인증,로그인 기능,await login(credentials);,"로그인,login,signin"
+계좌번호,accountNumber,변수,금융,계좌 번호,const accountNumber = account.number;,"계좌번호,account,계좌"
