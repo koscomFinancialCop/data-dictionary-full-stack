@@ -92,9 +92,9 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
     <div className="relative w-full" role="search">
       <form onSubmit={handleSubmit} className="relative" role="form">
         <div className={`
-          relative flex items-center bg-white rounded-full shadow-md 
+          relative flex items-center bg-[#2f2f2f] rounded-3xl border border-[#444] 
           transition-all duration-200 
-          ${isFocused ? 'shadow-lg ring-2 ring-black' : 'hover:shadow-lg'}
+          ${isFocused ? 'border-white/50' : 'hover:border-white/30'}
         `}>
           <label htmlFor={inputId} className="sr-only">
             한글 변수명 검색
@@ -108,8 +108,8 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onKeyDown={handleKeyDown}
-            placeholder="한글 변수명을 입력하세요 (예: 사용자명)"
-            className="w-full px-6 py-4 text-lg text-black bg-transparent outline-none rounded-l-full placeholder:text-gray-500"
+            placeholder="무엇이든 물어보세요"
+            className="w-full px-8 py-5 text-lg text-white bg-transparent outline-none rounded-l-3xl placeholder:text-[#8e8e8e]"
             disabled={isLoading}
             role="combobox"
             aria-autocomplete="list"
@@ -129,7 +129,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
                   setSelectedSuggestionIndex(-1);
                   inputRef.current?.focus();
                 }}
-                className="p-2 text-gray-500 hover:text-black transition-colors"
+                className="p-2 text-[#8e8e8e] hover:text-white transition-colors"
                 aria-label="검색어 지우기"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -142,7 +142,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               type="submit"
               disabled={isLoading || !query.trim()}
               className={`
-                p-2 transition-all duration-200
+                p-3 mr-3 transition-all duration-200
                 ${isLoading || !query.trim() 
                   ? 'text-[#444] cursor-not-allowed' 
                   : 'text-[#8e8e8e] hover:text-white'
@@ -151,13 +151,13 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               aria-label={isLoading ? '검색 중...' : '검색'}
             >
               {isLoading ? (
-                <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
               ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 2a8 8 0 016.32 12.906l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" />
                 </svg>
               )}
             </button>
@@ -172,7 +172,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
           id={listboxId}
           role="listbox"
           aria-label="검색 제안"
-          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden z-10"
+          className="absolute top-full left-0 right-0 mt-2 bg-[#2f2f2f] rounded-xl border border-[#444] overflow-hidden z-10"
         >
           {suggestions.map((suggestion, index) => (
             <button
@@ -182,8 +182,8 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               aria-selected={selectedSuggestionIndex === index}
               className={`w-full px-6 py-3 text-left transition-colors flex items-center ${
                 selectedSuggestionIndex === index
-                  ? 'bg-gray-100 text-black font-medium'
-                  : 'hover:bg-gray-50 text-black'
+                  ? 'bg-[#3e3e3e] text-white'
+                  : 'hover:bg-[#3e3e3e] text-white/80'
               }`}
               onMouseDown={(e) => {
                 e.preventDefault();
@@ -191,8 +191,8 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               }}
               onMouseEnter={() => setSelectedSuggestionIndex(index)}
             >
-              <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg className="w-4 h-4 mr-3 text-[#8e8e8e]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 2a8 8 0 016.32 12.906l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" />
               </svg>
               <span>{suggestion}</span>
             </button>

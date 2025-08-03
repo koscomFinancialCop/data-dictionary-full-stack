@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SearchBar from '@/components/SearchBar';
 import SearchResults from '@/components/SearchResults';
+import AnimatedText from '@/components/AnimatedText';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,11 +46,7 @@ export default function Home() {
       
       <main id="main-content" className="flex flex-col items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-2xl">
-          <header className="mb-20">
-            <h1 className="text-4xl font-medium text-center text-white/90">
-              한글 → 영어 변수명 변환기
-            </h1>
-          </header>
+          <AnimatedText />
           
           <SearchBar onSearch={handleSearch} isLoading={isLoading} />
           
