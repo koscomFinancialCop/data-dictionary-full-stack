@@ -139,7 +139,7 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
 
   return (
     <>
-      <div className="relative w-full mb-12" role="search">
+      <div className="relative w-full" style={{ marginBottom: '3rem' }} role="search">
       <form onSubmit={handleSubmit} className="relative" role="form">
         <div className={`
           relative flex items-center bg-gradient-to-r from-[#2a2a2a] to-[#252525] rounded-full border 
