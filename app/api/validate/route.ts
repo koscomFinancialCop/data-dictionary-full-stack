@@ -8,31 +8,41 @@ interface ValidationRule {
   suggestion?: string;
 }
 
+interface ValidationIssue {
+  line: number;
+  column: number;
+  variable: string;
+  issue: string;
+  suggestion?: string;
+  severity: 'error' | 'warning' | 'info';
+  rule: string;
+}
+
 const validationRules: ValidationRule[] = [
   {
     name: 'no-korean',
-    test: (variable) => !/[가-힣]/.test(variable),
+    test: (variable: string) => !/[가-힣]/.test(variable),
     message: '한글 변수명은 사용할 수 없습니다',
     severity: 'error',
     suggestion: '영어 변수명을 사용하세요'
   },
   {
     name: 'min-length',
-    test: (variable) => variable.length >= 2,
+    test: (variable: string) => variable.length >= 2,
     message: '변수명이 너무 짧습니다',
     severity: 'warning',
     suggestion: '의미를 명확히 표현하는 변수명을 사용하세요'
   },
   {
     name: 'max-length',
-    test: (variable) => variable.length <= 40,
+    test: (variable: string) => variable.length <= 40,
     message: '변수명이 너무 깁니다',
     severity: 'warning',
     suggestion: '간결하면서도 의미있는 변수명을 사용하세요'
   },
   {
     name: 'camelCase',
-    test: (variable) => {
+    test: (variable: string) => {
       // 상수는 대문자 허용
       if (variable === variable.toUpperCase() && variable.includes('_')) return true;
       // 클래스/컴포넌트는 PascalCase 허용
@@ -46,7 +56,7 @@ const validationRules: ValidationRule[] = [
   },
   {
     name: 'no-reserved',
-    test: (variable) => {
+    test: (variable: string) => {
       const reserved = ['class', 'function', 'return', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 
                        'do', 'switch', 'case', 'break', 'continue', 'try', 'catch', 'finally', 'throw',
                        'new', 'this', 'super', 'extends', 'import', 'export', 'default', 'async', 'await'];
@@ -57,7 +67,7 @@ const validationRules: ValidationRule[] = [
   },
   {
     name: 'meaningful-name',
-    test: (variable) => {
+    test: (variable: string) => {
       const meaningless = ['a', 'b', 'c', 'd', 'e', 'x', 'y', 'z', 'i', 'j', 'k', 'temp', 'tmp', 'data', 'info'];
       return !meaningless.includes(variable.toLowerCase());
     },
@@ -67,13 +77,13 @@ const validationRules: ValidationRule[] = [
   },
   {
     name: 'no-numbers-only',
-    test: (variable) => !/^\d+$/.test(variable),
+    test: (variable: string) => !/^\d+$/.test(variable),
     message: '숫자로만 이루어진 변수명은 사용할 수 없습니다',
     severity: 'error'
   },
   {
     name: 'korean-romanization',
-    test: (variable) => {
+    test: (variable: string) => {
       // 한글 로마자 표기 패턴 감지
       const romanizations = ['jumun', 'jango', 'gyeoljae', 'maemae', 'jeunggeogeum', 'yesugeum'];
       return !romanizations.some(r => variable.toLowerCase().includes(r));
@@ -102,12 +112,12 @@ export async function POST(request: NextRequest) {
       /class\s+([a-zA-Z_$가-힣][a-zA-Z0-9_$가-힣]*)/g,
     ];
 
-    const issues: any[] = [];
+    const issues: ValidationIssue[] = [];
     const lines = code.split('\n');
     const checkedVariables = new Set<string>();
 
-    lines.forEach((line, lineIndex) => {
-      variablePatterns.forEach(pattern => {
+    lines.forEach((line: string, lineIndex: number) => {
+      variablePatterns.forEach((pattern: RegExp) => {
         let match;
         pattern.lastIndex = 0; // Reset regex
         
