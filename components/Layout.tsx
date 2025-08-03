@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,6 +12,18 @@ export default function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const menuItems = [
     {
@@ -220,7 +232,7 @@ export default function Layout({ children }: LayoutProps) {
           border: 'none',
           cursor: 'pointer',
           color: '#ffffff',
-          ...(window.innerWidth <= 1024 && { display: 'block' })
+          ...(isMobile && { display: 'block' })
         }}
         aria-label="메뉴"
       >
@@ -240,7 +252,7 @@ export default function Layout({ children }: LayoutProps) {
       {isSidebarOpen && (
         <div
           style={{
-            display: window.innerWidth <= 1024 ? 'block' : 'none',
+            display: isMobile ? 'block' : 'none',
             position: 'fixed',
             inset: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
