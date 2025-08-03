@@ -37,16 +37,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#212121] text-white">
       {/* Skip to content link for keyboard users */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-black text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-white text-black px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#212121]">
         메인 컨텐츠로 건너뛰기
       </a>
       
       <main id="main-content" className="flex flex-col items-center justify-center min-h-screen px-4">
-        <div className="w-full max-w-3xl">
-          <header>
-            <h1 className="text-4xl font-bold text-center mb-8 text-black">
+        <div className="w-full max-w-2xl">
+          <header className="mb-20">
+            <h1 className="text-4xl font-medium text-center text-white/90">
               한글 → 영어 변수명 변환기
             </h1>
           </header>

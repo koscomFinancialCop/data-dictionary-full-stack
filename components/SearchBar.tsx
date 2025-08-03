@@ -142,10 +142,10 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               type="submit"
               disabled={isLoading || !query.trim()}
               className={`
-                p-3 rounded-full transition-all duration-200
+                p-2 transition-all duration-200
                 ${isLoading || !query.trim() 
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                  : 'bg-black text-white hover:bg-gray-800 active:bg-gray-900'
+                  ? 'text-[#444] cursor-not-allowed' 
+                  : 'text-[#8e8e8e] hover:text-white'
                 }
               `}
               aria-label={isLoading ? '검색 중...' : '검색'}
