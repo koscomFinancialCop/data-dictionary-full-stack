@@ -246,6 +246,20 @@ export default function Layout({ children }: LayoutProps) {
         <div style={{ flex: 1, overflow: 'auto' }}>
           {children}
         </div>
+        
+        {/* Copyright Footer */}
+        <footer style={{
+          padding: '12px 24px',
+          textAlign: 'center',
+          fontSize: '11px',
+          color: '#666666',
+          borderTop: '1px solid #1a1a1a',
+          backgroundColor: '#0a0a0a'
+        }}>
+          <p style={{ margin: 0 }}>
+            © {new Date().getFullYear()} K-Generator. All rights reserved by 금융매체팀 백건우.
+          </p>
+        </footer>
       </main>
 
       {/* Mobile Sidebar Overlay */}
