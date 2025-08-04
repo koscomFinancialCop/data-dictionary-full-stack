@@ -10,10 +10,16 @@
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "db:studio": "prisma studio",
+    "db:studio": "./scripts/studio.sh",
+    "studio:direct": "DATABASE_URL=\"$DIRECT_URL\" prisma studio",
     "import:excel": "ts-node scripts/import-excel.ts",
     "migrate:export": "ts-node scripts/migrate-to-production.ts --export",
-    "migrate:prod": "ts-node scripts/migrate-to-production.ts --migrate"
+    "migrate:prod": "ts-node scripts/migrate-to-production.ts --migrate",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:production": "./scripts/migrate-production.sh",
+    "db:migrate": "prisma migrate dev",
+    "db:seed:sample": "ts-node scripts/insert-sample-data.ts",
+    "import:sample-1000": "ts-node scripts/import-sample-1000.ts"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

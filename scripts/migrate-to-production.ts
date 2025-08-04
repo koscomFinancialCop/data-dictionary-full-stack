@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import * as fs from 'fs';
-import * as path from 'path';
+const { PrismaClient } = require('@prisma/client');
+const fs = require('fs');
+const path = require('path');
 
 // Local database
 const localPrisma = new PrismaClient({
@@ -28,43 +28,63 @@ async function migrateData() {
     await prodPrisma.$connect();
     console.log('✅ Connected to production database');
 
-    // Migrate Terms
-    console.log('\n📊 Migrating Terms...');
-    const terms = await localPrisma.term.findMany({
+    // Migrate VariableMapping
+    console.log('\n📊 Migrating Variable Mappings...');
+    const mappings = await localPrisma.variableMapping.findMany({
       orderBy: { createdAt: 'asc' }
     });
     
-    for (const term of terms) {
+    for (const mapping of mappings) {
       try {
-        await prodPrisma.term.upsert({
-          where: { id: term.id },
-          update: term,
-          create: term
+        await prodPrisma.variableMapping.upsert({
+          where: { id: mapping.id },
+          update: mapping,
+          create: mapping
         });
       } catch (error) {
-        console.log(`⚠️  Skipping term ${term.korean} - may already exist`);
+        console.log(`⚠️  Skipping mapping ${mapping.korean} - may already exist`);
       }
     }
-    console.log(`✅ Migrated ${terms.length} terms`);
+    console.log(`✅ Migrated ${mappings.length} variable mappings`);
 
-    // Migrate ExcelImportHistory
-    console.log('\n📊 Migrating Excel Import History...');
-    const importHistory = await localPrisma.excelImportHistory.findMany({
-      orderBy: { importedAt: 'asc' }
+    // Migrate SearchHistory
+    console.log('\n📊 Migrating Search History...');
+    const searchHistory = await localPrisma.searchHistory.findMany({
+      orderBy: { createdAt: 'asc' },
+      take: 10000 // Limit to recent history
     });
     
-    for (const history of importHistory) {
+    for (const history of searchHistory) {
       try {
-        await prodPrisma.excelImportHistory.upsert({
-          where: { id: history.id },
-          update: history,
-          create: history
+        await prodPrisma.searchHistory.create({
+          data: history
         });
       } catch (error) {
-        console.log(`⚠️  Skipping import history ${history.id}`);
+        console.log(`⚠️  Skipping search history ${history.id}`);
       }
     }
-    console.log(`✅ Migrated ${importHistory.length} import history records`);
+    console.log(`✅ Migrated ${searchHistory.length} search history records`);
+
+    // Migrate RAGSuggestionLog
+    console.log('\n📊 Migrating RAG Suggestion Logs...');
+    const ragLogs = await localPrisma.rAGSuggestionLog.findMany({
+      orderBy: { createdAt: 'asc' },
+      take: 10000
+    });
+    
+    for (const log of ragLogs) {
+      try {
+        await prodPrisma.rAGSuggestionLog.create({
+          data: {
+            ...log,
+            suggestions: log.suggestions as any
+          }
+        });
+      } catch (error) {
+        console.log(`⚠️  Skipping RAG log ${log.id}`);
+      }
+    }
+    console.log(`✅ Migrated ${ragLogs.length} RAG suggestion logs`);
 
     // Migrate UserActivity
     console.log('\n📊 Migrating User Activity...');
@@ -76,7 +96,11 @@ async function migrateData() {
     for (const activity of activities) {
       try {
         await prodPrisma.userActivity.create({
-          data: activity
+          data: {
+            ...activity,
+            result: activity.result as any,
+            metadata: activity.metadata as any
+          }
         });
       } catch (error) {
         console.log(`⚠️  Skipping activity ${activity.id}`);
@@ -105,8 +129,9 @@ async function migrateData() {
 
     // Generate summary
     console.log('\n📊 Migration Summary:');
-    console.log(`- Terms: ${terms.length}`);
-    console.log(`- Import History: ${importHistory.length}`);
+    console.log(`- Variable Mappings: ${mappings.length}`);
+    console.log(`- Search History: ${searchHistory.length}`);
+    console.log(`- RAG Logs: ${ragLogs.length}`);
     console.log(`- User Activities: ${activities.length}`);
     console.log(`- Daily Stats: ${dailyStats.length}`);
 
@@ -126,8 +151,9 @@ async function exportToJSON() {
   console.log('💾 Exporting data to JSON...');
   
   const data = {
-    terms: await localPrisma.term.findMany(),
-    excelImportHistory: await localPrisma.excelImportHistory.findMany(),
+    variableMapping: await localPrisma.variableMapping.findMany(),
+    searchHistory: await localPrisma.searchHistory.findMany({ take: 10000 }),
+    ragSuggestionLog: await localPrisma.rAGSuggestionLog.findMany({ take: 10000 }),
     userActivity: await localPrisma.userActivity.findMany({ take: 10000 }),
     dailyStats: await localPrisma.dailyStats.findMany()
   };
