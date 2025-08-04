@@ -11,7 +11,9 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "import:excel": "ts-node scripts/import-excel.ts"
+    "import:excel": "ts-node scripts/import-excel.ts",
+    "migrate:export": "ts-node scripts/migrate-to-production.ts --export",
+    "migrate:prod": "ts-node scripts/migrate-to-production.ts --migrate"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

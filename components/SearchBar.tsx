@@ -198,31 +198,163 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
           id={listboxId}
           role="listbox"
           aria-label="검색 제안"
-          className="absolute top-full left-0 right-0 mt-2 bg-[#2f2f2f] rounded-2xl border border-[#444] overflow-hidden z-10 shadow-xl"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            marginTop: '12px',
+            background: 'rgba(26, 26, 26, 0.8)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            overflow: 'hidden',
+            zIndex: 10,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+            animation: 'slideDown 0.2s ease-out'
+          }}
         >
-          {suggestions.map((suggestion, index) => (
-            <button
-              key={index}
-              id={`suggestion-${index}`}
-              role="option"
-              aria-selected={selectedSuggestionIndex === index}
-              className={`w-full px-6 py-3 text-left transition-colors flex items-center text-sm ${
-                selectedSuggestionIndex === index
-                  ? 'bg-[#3e3e3e] text-white'
-                  : 'hover:bg-[#3e3e3e] text-white/80'
-              }`}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleSuggestionClick(suggestion);
-              }}
-              onMouseEnter={() => setSelectedSuggestionIndex(index)}
-            >
-              <svg className="w-4 h-4 mr-3 text-[#8e8e8e]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M10 2a8 8 0 016.32 12.906l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" />
-              </svg>
-              <span>{suggestion}</span>
-            </button>
-          ))}
+          <div style={{ padding: '8px' }}>
+            {suggestions.map((suggestion, index) => {
+              const isSelected = selectedSuggestionIndex === index;
+              const highlightIndex = suggestion.toLowerCase().indexOf(query.toLowerCase());
+              const beforeHighlight = suggestion.slice(0, highlightIndex);
+              const highlighted = suggestion.slice(highlightIndex, highlightIndex + query.length);
+              const afterHighlight = suggestion.slice(highlightIndex + query.length);
+              
+              return (
+                <button
+                  key={index}
+                  id={`suggestion-${index}`}
+                  role="option"
+                  aria-selected={isSelected}
+                  style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    fontSize: '15px',
+                    color: isSelected ? '#ffffff' : 'rgba(255, 255, 255, 0.8)',
+                    background: isSelected ? 'rgba(16, 163, 127, 0.15)' : 'transparent',
+                    border: 'none',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    outline: 'none',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSuggestionClick(suggestion);
+                  }}
+                  onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                  onMouseLeave={() => setSelectedSuggestionIndex(-1)}
+                >
+                  {/* Icon */}
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '10px',
+                    background: isSelected ? 'rgba(16, 163, 127, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.15s ease'
+                  }}>
+                    <svg 
+                      style={{ 
+                        width: '18px', 
+                        height: '18px',
+                        color: isSelected ? '#10a37f' : 'rgba(255, 255, 255, 0.4)'
+                      }} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  
+                  {/* Text with highlighting */}
+                  <div style={{ flex: 1 }}>
+                    <span>
+                      {highlightIndex >= 0 ? (
+                        <>
+                          <span style={{ color: isSelected ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.6)' }}>
+                            {beforeHighlight}
+                          </span>
+                          <span style={{ 
+                            color: isSelected ? '#10a37f' : '#10a37f',
+                            fontWeight: '600',
+                            borderBottom: '1px solid currentColor'
+                          }}>
+                            {highlighted}
+                          </span>
+                          <span style={{ color: isSelected ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.6)' }}>
+                            {afterHighlight}
+                          </span>
+                        </>
+                      ) : (
+                        suggestion
+                      )}
+                    </span>
+                  </div>
+                  
+                  {/* Enter hint */}
+                  {isSelected && (
+                    <div style={{
+                      fontSize: '12px',
+                      color: 'rgba(16, 163, 127, 0.8)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <span style={{
+                        padding: '2px 6px',
+                        background: 'rgba(16, 163, 127, 0.2)',
+                        borderRadius: '4px',
+                        border: '1px solid rgba(16, 163, 127, 0.3)',
+                        fontSize: '11px',
+                        fontWeight: '500'
+                      }}>
+                        Enter
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Hover effect background */}
+                  {isSelected && (
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(16, 163, 127, 0.05) 50%, transparent 100%)',
+                      opacity: 0.5,
+                      pointerEvents: 'none'
+                    }}></div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          
+          {/* Footer hint */}
+          <div style={{
+            padding: '8px 20px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+            fontSize: '12px',
+            color: 'rgba(255, 255, 255, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <span>↑↓ 이동</span>
+            <span>Enter 선택</span>
+            <span>Esc 닫기</span>
+          </div>
         </div>
       )}
     </div>
@@ -236,6 +368,20 @@ export default function SearchBar({ onSearch, isLoading, onNoResults }: SearchBa
       onReject={handleRAGReject}
       onClose={handleRAGReject}
     />
+    
+    {/* CSS animations */}
+    <style jsx>{`
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `}</style>
   </>
   );
 }
