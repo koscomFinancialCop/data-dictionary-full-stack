@@ -58,3 +58,36 @@ model RAGSuggestionLog {
   @@index([accepted])
   @@index([createdAt])
 }
+
+// 사용자 활동 로그
+model UserActivity {
+  id            String   @id @default(cuid())
+  activityType  String   // "translation", "validation", "rag_suggestion"
+  query         String?  // 검색어 또는 입력값
+  result        Json?    // 결과 데이터
+  userId        String?  // 사용자 ID (선택적)
+  sessionId     String?  // 세션 ID
+  success       Boolean  @default(true)
+  metadata      Json?    // 추가 메타데이터
+  createdAt     DateTime @default(now())
+
+  @@index([activityType])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+// 일별 통계
+model DailyStats {
+  id                String   @id @default(cuid())
+  date              DateTime @unique @db.Date
+  totalTranslations Int      @default(0)
+  totalValidations  Int      @default(0)
+  totalRagSuggestions Int    @default(0)
+  uniqueUsers       Int      @default(0)
+  successRate       Float    @default(100)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([date])
+}

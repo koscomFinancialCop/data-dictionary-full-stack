@@ -61,174 +61,401 @@ export default function SearchResults({ results, isLoading, query }: SearchResul
   useEffect(() => {
     setCurrentPage(1);
   }, [query]);
+
+  // Styles
+  const containerStyle = {
+    background: 'rgba(26, 26, 26, 0.6)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    borderRadius: '16px',
+    padding: '20px',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    animation: 'slideUp 0.3s ease-out'
+  };
+
+  const loadingSkeletonStyle = {
+    height: '60px',
+    background: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: '12px',
+    marginBottom: '12px',
+    animation: 'shimmer 1.5s infinite'
+  };
+
+  const resultItemStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '16px 20px',
+    background: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: '12px',
+    marginBottom: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    border: '1px solid rgba(255, 255, 255, 0.05)'
+  };
+
+  const resultItemHoverStyle = {
+    background: 'rgba(16, 163, 127, 0.1)',
+    transform: 'translateX(4px)',
+    borderColor: 'rgba(16, 163, 127, 0.3)'
+  };
+
+  const koreanTextStyle = {
+    fontSize: '16px',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.9)',
+    minWidth: '100px'
+  };
+
+  const englishTextStyle = {
+    fontSize: '16px',
+    fontFamily: 'Consolas, "Courier New", monospace',
+    fontWeight: '600',
+    color: '#10a37f',
+    minWidth: '120px'
+  };
+
+  const arrowStyle = {
+    width: '16px',
+    height: '16px',
+    color: 'rgba(255, 255, 255, 0.3)',
+    margin: '0 16px'
+  };
+
+  const descriptionStyle = {
+    fontSize: '14px',
+    color: 'rgba(255, 255, 255, 0.5)',
+    marginLeft: '16px',
+    flex: 1
+  };
+
+  const copyButtonStyle = (copied: boolean) => ({
+    padding: '6px',
+    borderRadius: '8px',
+    background: copied ? 'rgba(16, 163, 127, 0.2)' : 'transparent',
+    color: copied ? '#10a37f' : 'rgba(255, 255, 255, 0.4)',
+    transition: 'all 0.2s ease',
+    border: '1px solid transparent'
+  });
+
+  const copiedTextStyle = {
+    fontSize: '12px',
+    color: '#10a37f',
+    marginRight: '8px',
+    minWidth: '50px',
+    textAlign: 'right' as const,
+    opacity: 0,
+    transition: 'opacity 0.2s ease'
+  };
+
+  const paginationStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '24px',
+    gap: '8px'
+  };
+
+  const pageButtonStyle = (active: boolean) => ({
+    width: '32px',
+    height: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontWeight: active ? '600' : '400',
+    color: active ? '#ffffff' : 'rgba(255, 255, 255, 0.6)',
+    background: active ? 'rgba(16, 163, 127, 0.2)' : 'transparent',
+    border: active ? '1px solid rgba(16, 163, 127, 0.3)' : '1px solid transparent',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  });
+
+  const navButtonStyle = (disabled: boolean) => ({
+    padding: '6px 16px',
+    fontSize: '14px',
+    color: disabled ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)',
+    background: 'transparent',
+    border: 'none',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    transition: 'color 0.2s ease'
+  });
+
+  const noResultsStyle = {
+    textAlign: 'center' as const,
+    padding: '48px 24px'
+  };
+
+  const noResultsTextStyle = {
+    fontSize: '16px',
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginBottom: '12px'
+  };
+
+  const aiLoadingStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    fontSize: '14px',
+    color: '#10a37f'
+  };
+
+  const dotStyle = {
+    width: '6px',
+    height: '6px',
+    background: '#10a37f',
+    borderRadius: '50%',
+    animation: 'pulse 1.5s ease-in-out infinite'
+  };
+
   if (isLoading) {
     return (
-      <div className="space-y-3" role="status" aria-live="polite" aria-label="검색 결과 로딩 중">
-        <span className="sr-only">검색 결과를 불러오는 중입니다...</span>
+      <div style={containerStyle} role="status" aria-live="polite" aria-label="검색 결과 로딩 중">
+        <span style={{ position: 'absolute', left: '-9999px' }}>검색 결과를 불러오는 중입니다...</span>
         {[1, 2, 3].map((i) => (
-          <div key={i} className="p-6 rounded-2xl bg-[#1a1a1a]/20 animate-pulse" aria-hidden="true">
-            <div className="flex items-center gap-8">
-              <div className="h-6 bg-[#333]/20 rounded w-24"></div>
-              <div className="w-4 h-4 bg-[#333]/20 rounded"></div>
-              <div className="h-6 bg-[#333]/20 rounded w-32"></div>
-              <div className="h-4 bg-[#333]/20 rounded w-48"></div>
-            </div>
-          </div>
+          <div key={i} style={loadingSkeletonStyle} aria-hidden="true"></div>
         ))}
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.3; }
+          }
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
       </div>
     );
   }
 
   if (results.length === 0 && query) {
     return (
-      <div role="region" aria-live="polite">
-        <div className="text-center py-12">
-          <p className="text-base text-[#666] mb-2">
+      <div style={containerStyle} role="region" aria-live="polite">
+        <div style={noResultsStyle}>
+          <p style={noResultsTextStyle}>
             "{query}"에 대한 검색 결과가 없습니다
           </p>
-          <div className="flex items-center justify-center gap-2">
-            <div className="w-1.5 h-1.5 bg-[#10a37f] rounded-full animate-pulse"></div>
-            <p className="text-sm text-[#10a37f]">AI가 제안을 준비하고 있습니다</p>
+          <div style={aiLoadingStyle}>
+            <div style={dotStyle}></div>
+            <p>AI가 제안을 준비하고 있습니다</p>
           </div>
         </div>
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+          }
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <section aria-label="검색 결과">
-      <h2 className="sr-only">검색 결과 목록</h2>
-      <div className="space-y-3">
+    <section aria-label="검색 결과" style={containerStyle}>
+      <h2 style={{ position: 'absolute', left: '-9999px' }}>검색 결과 목록</h2>
+      <div>
         {currentResults.map((result, index) => (
-        <article
-          key={`${currentPage}-${index}`}
-          className="group"
-          aria-label={`${result.korean}의 영어 변수명`}
-          style={{
-            animationDelay: `${index * 50}ms`,
-            animation: 'fade-in 0.4s ease-out forwards',
-            opacity: 0
-          }}
-        >
-          <div className="flex items-center justify-between p-6 rounded-2xl bg-[#1a1a1a]/20 hover:bg-[#1a1a1a]/30 transition-all duration-300 cursor-pointer"
-               onClick={() => {
-                 navigator.clipboard.writeText(result.english);
-                 setCopiedIndex(index);
-                 setTimeout(() => setCopiedIndex(null), 2000);
-               }}>
-            <div className="flex items-center gap-8">
-              {/* Korean */}
-              <div className="min-w-[120px]">
-                <p className="text-lg font-medium text-white">
-                  {result.korean}
-                </p>
-              </div>
+          <article
+            key={`${currentPage}-${index}`}
+            aria-label={`${result.korean}의 영어 변수명`}
+            style={{
+              ...resultItemStyle,
+              opacity: 0,
+              animation: `fadeIn 0.3s ease-out ${index * 0.05}s forwards`
+            }}
+            onMouseEnter={(e) => {
+              Object.assign(e.currentTarget.style, resultItemHoverStyle);
+            }}
+            onMouseLeave={(e) => {
+              Object.assign(e.currentTarget.style, {
+                background: 'rgba(255, 255, 255, 0.03)',
+                transform: 'translateX(0)',
+                borderColor: 'rgba(255, 255, 255, 0.05)'
+              });
+            }}
+            onClick={() => {
+              navigator.clipboard.writeText(result.english);
+              setCopiedIndex(index);
+              setTimeout(() => setCopiedIndex(null), 2000);
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+              <span style={koreanTextStyle}>{result.korean}</span>
               
-              {/* Arrow */}
-              <svg className="w-4 h-4 text-[#333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style={arrowStyle} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
               
-              {/* English */}
-              <div className="min-w-[150px]">
-                <code className="text-lg font-mono text-[#10a37f] font-medium">
-                  {result.english}
-                </code>
-              </div>
+              <code style={englishTextStyle}>{result.english}</code>
               
-              {/* Description */}
               {result.description && (
-                <>
-                  <div className="w-px h-4 bg-[#333]"></div>
-                  <p className="text-sm text-[#666]">
-                    {result.description}
-                  </p>
-                </>
+                <span style={descriptionStyle}>{result.description}</span>
               )}
             </div>
             
-            {/* Copy indicator */}
-            <div className="flex items-center gap-3">
-              <span className={`text-xs transition-opacity duration-300 ${
-                copiedIndex === index ? 'opacity-100 text-[#10a37f]' : 'opacity-0'
-              }`}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{
+                ...copiedTextStyle,
+                opacity: copiedIndex === index ? 1 : 0
+              }}>
                 복사됨
               </span>
-              <div className={`p-2 rounded-lg transition-all duration-300 ${
-                copiedIndex === index 
-                  ? 'bg-[#10a37f]/20 text-[#10a37f]' 
-                  : 'text-[#444] group-hover:text-[#666]'
-              }`}>
+              <button
+                style={copyButtonStyle(copiedIndex === index)}
+                onMouseEnter={(e) => {
+                  if (copiedIndex !== index) {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (copiedIndex !== index) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = 'transparent';
+                  }
+                }}
+                aria-label="복사"
+              >
                 {copiedIndex === index ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
                 )}
-              </div>
+              </button>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
       </div>
 
       {/* 페이지네이션 */}
       {totalPages > 1 && (
-        <nav className="mt-12 flex justify-center" aria-label="페이지 내비게이션">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 text-sm rounded-lg transition-colors ${
-                currentPage === 1
-                  ? 'text-[#444] cursor-not-allowed'
-                  : 'text-[#666] hover:text-white'
-              }`}
-              aria-label="이전 페이지"
-            >
-              이전
-            </button>
-            
-            <div className="flex items-center gap-1 mx-4">
-              {pageNumbers.map((page, index) => (
-                page === '...' ? (
-                  <span key={`ellipsis-${index}`} className="px-2 text-[#444]">...</span>
-                ) : (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page as number)}
-                    className={`w-8 h-8 text-sm rounded-lg transition-all duration-200 ${
-                      currentPage === page
-                        ? 'text-white font-medium'
-                        : 'text-[#666] hover:text-white'
-                    }`}
-                    aria-label={`페이지 ${page}`}
-                    aria-current={currentPage === page ? 'page' : undefined}
-                  >
-                    {page}
-                  </button>
-                )
-              ))}
-            </div>
-
-            <button
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-              disabled={currentPage === totalPages}
-              className={`px-4 py-2 text-sm rounded-lg transition-colors ${
-                currentPage === totalPages
-                  ? 'text-[#444] cursor-not-allowed'
-                  : 'text-[#666] hover:text-white'
-              }`}
-              aria-label="다음 페이지"
-            >
-              다음
-            </button>
+        <nav style={paginationStyle} aria-label="페이지 내비게이션">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            style={navButtonStyle(currentPage === 1)}
+            onMouseEnter={(e) => {
+              if (currentPage !== 1) {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentPage !== 1) {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+              }
+            }}
+            aria-label="이전 페이지"
+          >
+            이전
+          </button>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '0 16px' }}>
+            {pageNumbers.map((page, index) => (
+              page === '...' ? (
+                <span key={`ellipsis-${index}`} style={{ padding: '0 8px', color: 'rgba(255, 255, 255, 0.3)' }}>...</span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page as number)}
+                  style={pageButtonStyle(currentPage === page)}
+                  onMouseEnter={(e) => {
+                    if (currentPage !== page) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentPage !== page) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.borderColor = 'transparent';
+                    }
+                  }}
+                  aria-label={`페이지 ${page}`}
+                  aria-current={currentPage === page ? 'page' : undefined}
+                >
+                  {page}
+                </button>
+              )
+            ))}
           </div>
+
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+            style={navButtonStyle(currentPage === totalPages)}
+            onMouseEnter={(e) => {
+              if (currentPage !== totalPages) {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentPage !== totalPages) {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+              }
+            }}
+            aria-label="다음 페이지"
+          >
+            다음
+          </button>
         </nav>
       )}
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes shimmer {
+          0% { opacity: 0.3; }
+          50% { opacity: 0.5; }
+          100% { opacity: 0.3; }
+        }
+      `}</style>
     </section>
   );
 }

@@ -211,6 +211,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 활동 로깅 (비동기로 처리)
+    const sessionId = request.headers.get('x-session-id') || 'anonymous';
+    fetch(new URL('/api/activity', request.url).toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        activityType: 'validation',
+        query: code.substring(0, 100), // 코드 일부만 저장
+        result: { 
+          totalIssues: issues.length,
+          errors: issues.filter(i => i.severity === 'error').length,
+          warnings: issues.filter(i => i.severity === 'warning').length,
+        },
+        sessionId,
+        success: true,
+      }),
+    }).catch(console.error);
+
     return NextResponse.json({
       issues,
       suggestions,

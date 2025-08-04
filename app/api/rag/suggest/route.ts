@@ -3,7 +3,7 @@ import { RAGWebhookRequest, RAGWebhookResponse } from '@/types/rag';
 
 // RAG 설정 - n8n webhook URL 사용
 const RAG_CONFIG = {
-  webhookUrl: process.env.RAG_WEBHOOK_URL || 'https://koscom.app.n8n.cloud/webhook/invoke',
+  webhookUrl: process.env.RAG_WEBHOOK_URL || 'https://koscom.app.n8n.cloud/webhook/variable',
   apiKey: process.env.RAG_API_KEY,
   timeout: parseInt(process.env.RAG_TIMEOUT || '30000'),
   maxRetries: parseInt(process.env.RAG_MAX_RETRIES || '3'),

@@ -119,6 +119,20 @@ export async function GET(request: NextRequest) {
       }
     }).catch(console.error); // 에러가 나도 검색 결과는 반환
 
+    // 활동 로깅 (비동기로 처리)
+    const sessionId = request.headers.get('x-session-id') || 'anonymous';
+    fetch(new URL('/api/activity', request.url).toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        activityType: 'translation',
+        query,
+        result: { count: sortedResults.length },
+        sessionId,
+        success: true,
+      }),
+    }).catch(console.error);
+
     return NextResponse.json({
       results: sortedResults.slice(0, 10),
       total: sortedResults.length

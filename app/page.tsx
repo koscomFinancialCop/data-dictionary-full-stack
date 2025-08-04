@@ -1,11 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from '@/components/SearchBar';
 import SearchResults from '@/components/SearchResults';
 import AnimatedText from '@/components/AnimatedText';
 
 export default function Home() {
+  // Initialize session ID
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !sessionStorage.getItem('sessionId')) {
+      const sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      sessionStorage.setItem('sessionId', sessionId);
+    }
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Array<{
     korean: string;
@@ -22,7 +29,16 @@ export default function Home() {
     setHasNoResults(false); // Reset state
     
     try {
-      const response = await fetch(`/api/translate?q=${encodeURIComponent(query)}`);
+      // Get session ID for tracking
+      const sessionId = typeof window !== 'undefined' 
+        ? sessionStorage.getItem('sessionId') || 'anonymous' 
+        : 'anonymous';
+        
+      const response = await fetch(`/api/translate?q=${encodeURIComponent(query)}`, {
+        headers: {
+          'x-session-id': sessionId
+        }
+      });
       const data = await response.json();
       
       if (response.ok) {
@@ -52,18 +68,90 @@ export default function Home() {
     // SearchBar가 이 콜백을 감지하고 RAG를 호출합니다
   };
 
+  // Styles
+  const containerStyle = {
+    position: 'relative' as const,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100%',
+    padding: '48px 16px'
+  };
+
+  const backgroundDecorationStyle = {
+    position: 'fixed' as const,
+    inset: 0,
+    overflow: 'hidden',
+    pointerEvents: 'none' as const
+  };
+
+  const decorationBlobStyle1 = {
+    position: 'absolute' as const,
+    top: '-160px',
+    right: '-160px',
+    width: '320px',
+    height: '320px',
+    backgroundColor: 'rgba(16, 163, 127, 0.05)',
+    borderRadius: '50%',
+    filter: 'blur(60px)'
+  };
+
+  const decorationBlobStyle2 = {
+    position: 'absolute' as const,
+    bottom: '-160px',
+    left: '-160px',
+    width: '320px',
+    height: '320px',
+    backgroundColor: 'rgba(16, 163, 127, 0.05)',
+    borderRadius: '50%',
+    filter: 'blur(60px)'
+  };
+
+  const contentWrapperStyle = {
+    width: '100%',
+    maxWidth: '1024px',
+    margin: '0 auto',
+    position: 'relative' as const,
+    zIndex: 10
+  };
+
+  const searchBarWrapperStyle = {
+    position: 'relative' as const,
+    marginBottom: '32px'
+  };
+
+  const searchBarGlowStyle = {
+    position: 'absolute' as const,
+    inset: 0,
+    zIndex: -1,
+    filter: 'blur(48px)',
+    opacity: 0.2
+  };
+
+  const searchBarGlowInnerStyle = {
+    height: '100%',
+    width: '100%',
+    background: 'linear-gradient(to right, #10a37f, #0ea573)',
+    borderRadius: '50%'
+  };
+
+  const searchResultsWrapperStyle = {
+    animation: 'fadeIn 0.5s ease-out'
+  };
+
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-full px-4 py-12">
+    <div style={containerStyle}>
       {/* Background decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#10a37f]/5 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#10a37f]/5 rounded-full blur-3xl"></div>
+      <div style={backgroundDecorationStyle}>
+        <div style={decorationBlobStyle1}></div>
+        <div style={decorationBlobStyle2}></div>
       </div>
       
-      <div className="w-full max-w-4xl mx-auto relative z-10">
+      <div style={contentWrapperStyle}>
         <AnimatedText />
         
-        <div className="relative mb-8">
+        <div style={searchBarWrapperStyle}>
           <SearchBar 
             onSearch={handleSearch} 
             isLoading={isLoading}
@@ -71,13 +159,13 @@ export default function Home() {
           />
           
           {/* Search bar glow effect */}
-          <div className="absolute inset-0 -z-10 blur-3xl opacity-20">
-            <div className="h-full w-full bg-gradient-to-r from-[#10a37f] to-[#0ea573] rounded-full"></div>
+          <div style={searchBarGlowStyle}>
+            <div style={searchBarGlowInnerStyle}></div>
           </div>
         </div>
         
         {searchQuery && (
-          <div className="animate-fade-in">
+          <div style={searchResultsWrapperStyle}>
             <SearchResults 
               results={searchResults} 
               isLoading={isLoading}
@@ -86,6 +174,19 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
