@@ -1,26 +1,5 @@
 # Development files
 .env.development.local
-.env.local
-
-# Scripts that aren't needed in production (keep setup-vercel-env.js)
-scripts/migrate-production.sh
-scripts/studio.sh
-scripts/migrate-remaining.ts
-scripts/insert-sample-data.ts
-scripts/import-sample-1000.ts
-scripts/import-excel.ts
-scripts/import-sample-500.ts
-scripts/analyze-excel.ts
-scripts/migrate-to-production.ts
-
-# Data files
-data/
-*.xlsx
-*.csv
-*.sql
-
-# Documentation
-docs/
 
 # Git
 .git/
@@ -29,4 +8,6 @@ docs/
 # Other
 venv/
 reference/
-variable_mapping_data.sql
+*.sql
+
+# Keep essential files for build

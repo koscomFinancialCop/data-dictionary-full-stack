@@ -1,26 +1,4 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "node scripts/setup-vercel-env.js && prisma generate && next build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "regions": ["icn1"],
-  "functions": {
-    "app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
-  "crons": [{
-    "path": "/api/cron/backup",
-    "schedule": "0 17 * * *"
-  }],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "DIRECT_URL": "@direct_url",
-    "RAG_WEBHOOK_URL": "@rag_webhook_url",
-    "RAG_TIMEOUT": "@rag_timeout",
-    "RAG_MAX_RETRIES": "@rag_max_retries",
-    "ENABLE_RAG_SUGGESTIONS": "@enable_rag_suggestions",
-    "RAG_MIN_CONFIDENCE": "@rag_min_confidence",
-    "CRON_SECRET": "@cron_secret"
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
 }
